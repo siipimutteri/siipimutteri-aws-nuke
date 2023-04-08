@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
-	"strings"
 
 	"github.com/rebuy-de/aws-nuke/v2/pkg/types"
 
@@ -116,7 +115,7 @@ func (c *Nuke) InBlocklist(searchID string) bool {
 	return false
 }
 
-func (c *Nuke) ValidateAccount(accountID string, aliases []string) error {
+func (c *Nuke) ValidateAccount(accountID string) error {
 	if !c.HasBlocklist() {
 		return fmt.Errorf("The config file contains an empty blocklist. " +
 			"For safety reasons you need to specify at least one account ID. " +
@@ -126,19 +125,6 @@ func (c *Nuke) ValidateAccount(accountID string, aliases []string) error {
 	if c.InBlocklist(accountID) {
 		return fmt.Errorf("You are trying to nuke the account with the ID %s, "+
 			"but it is blocklisted. Aborting.", accountID)
-	}
-
-	if len(aliases) == 0 {
-		return fmt.Errorf("The specified account doesn't have an alias. " +
-			"For safety reasons you need to specify an account alias. " +
-			"Your production account should contain the term 'prod'.")
-	}
-
-	for _, alias := range aliases {
-		if strings.Contains(strings.ToLower(alias), "prod") {
-			return fmt.Errorf("You are trying to nuke an account with the alias '%s', "+
-				"but it has the substring 'prod' in it. Aborting.", alias)
-		}
 	}
 
 	if _, ok := c.Accounts[accountID]; !ok {

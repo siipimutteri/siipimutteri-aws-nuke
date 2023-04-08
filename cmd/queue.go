@@ -41,7 +41,7 @@ func (i *Item) Print() {
 	case ItemStateFailed:
 		Log(i.Region, i.Type, i.Resource, ReasonError, "failed")
 	case ItemStateFiltered:
-		Log(i.Region, i.Type, i.Resource, ReasonSkip, i.Reason)
+		LogWarn(i.Region, i.Type, i.Resource, ReasonSkip, i.Reason)
 	case ItemStateFinished:
 		Log(i.Region, i.Type, i.Resource, ReasonSuccess, "removed")
 	}

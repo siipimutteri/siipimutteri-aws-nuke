@@ -7,6 +7,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/rebuy-de/aws-nuke/v2/resources"
+	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -59,4 +60,23 @@ func Log(region *Region, resourceType string, r resources.Resource, c color.Colo
 	}
 
 	c.Printf("%s\n", msg)
+}
+
+func LogWarn(region *Region, resourceType string, r resources.Resource, c color.Color, msg string) {
+	var str string
+	str = region.Name + " - " + resourceType + " - "
+
+	rString, ok := r.(resources.LegacyStringer)
+	if ok {
+		str = str + rString.String() + " - "
+	}
+
+	rProp, ok := r.(resources.ResourcePropertyGetter)
+	if ok {
+		str = str + Sorted(rProp.Properties()) + " - "
+	}
+
+	str = str + msg
+
+	log.Infof("%s", str)
 }
